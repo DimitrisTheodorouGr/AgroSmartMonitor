@@ -30,7 +30,7 @@
                 }
 
                
-                //Admin Interface
+                 //Admin Interface
                 //if the id exists in the database then redircet the user to the interface
                 if($role == 'admin')
                 {   echo '<script language="javascript">alert(" Welcome Admin ");</script>';    
@@ -38,8 +38,8 @@
                 }//end if Admin interface
                 else if($role =='client')
                 {
-                    echo '<script language="javascript">alert(" Welcome Client");</script>';   
-                    echo '<script language="javascript">document.location="User.php";</script>';   
+                    //echo '<script language="javascript">alert(" Welcome Client");</script>';   
+                    echo '<script language="javascript">document.location="User_Home.php";</script>';   
                 }
                 else
                 {
