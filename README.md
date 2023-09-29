@@ -1,4 +1,4 @@
-# AgroSmartMonitor
+# AgroSmartMonitor During my Diploma Thesis
 Initially, users log in with their credentials.
 On the home page of the user (farmer) the locations of the sensors are shown on the map, while the table shows when each sensor was last active. 
 From the options in the middle, the user can select the sensor whose values he wants to see, the interval for which he wants to see values and, using the quick keys, he can select some predefined time intervals. 
