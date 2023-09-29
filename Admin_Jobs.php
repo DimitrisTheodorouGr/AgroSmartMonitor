@@ -80,15 +80,15 @@
                     <div class="collapse navbar-collapse" >
                     <ul class="navbar-nav ">
                         <li class="nav-item">
-                            <a class="nav-link" href="User_Home.php">Αρχική</a>
+                            <a class="nav-link" href="Admin_Home.php">Αρχική</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="User_Jobs.php">Εργασίες</a>
+                            <a class="nav-link active" href="Admin_Jobs.php">Εργασίες</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link" href="User_Weather.php">Καιρός</a>
+                            <a class="nav-link " href="Admin_Create.php">Προσθήκη</a>
                         </li>
-                       
                     </ul>
                     </div>
                    
@@ -118,7 +118,7 @@
               
                 <div class="container-fluid">
                     <h4> Εύρεση εργασίας:</h4> 
-                    <form action="User_Jobs.php" method="POST">
+                    <form action="Admin_Jobs.php" method="POST">
                         <div class="row">
                                 <div class="col-2">
                                     <h6> Επέλεξε κατάσταση:</h6> 
@@ -165,7 +165,7 @@
                 </div> 
                 <div class="container-fluid">
                     <h4> Δημιουργία εργασίας:</h4> 
-                    <form action="User_Jobs.php" method="POST">
+                    <form action="Admin_Jobs.php" method="POST">
                         <div class="row">
                                 <div class="col-2">
                                 <h6>Επέλεξε ημερομηνία:</h6>  
@@ -181,35 +181,61 @@
                                     </select> 
                                 </div>
                                 <div class="col-2">
-                                    <h6> Επέλεξε αγροτεμάχιο:</h6> 
-                                    <select name="field_new" id="field_new">
-                                    <option disabled selected value> --Επέλεξε-- </option>
+                                    <h6> Επέλεξε Πελάτη:</h6> 
+                                    <select name="client_new" id="client_new" onchange='changeclient(this)'>
+                                    
                                     <?php
-                                        
-                                        $query6 = "SELECT ID , LOCATION, CROP, MORGEN FROM parcel WHERE ID_AFM2 = '". $id ."'";
+                                       // <option disabled selected value> --Επέλεξε-- </option>
+                                        $query6 = "SELECT DISTINCT parcel.ID_AFM2,person.NAME, person.SURNAME FROM parcel
+                                                    INNER JOIN person ON person.ID_AFM= parcel.ID_AFM2";
                                         $result6 = mysqli_query($link,$query6);
- 
-                                        if(mysqli_num_rows($result6) > 0)
-                                        { 
-                                            for($x=0;$x<mysqli_num_rows($result6);$x++)
-                                            {
-                                                $row = mysqli_fetch_array($result6);
-                                         
-                                                echo"<option  name=".$row['ID']." value=".$row['ID']." >".$row['CROP']." ".$row['LOCATION']." ".$row['MORGEN']."στρ."."</option>";                                
-                                            
-                                            } 
-                                            // Free result set
-                                            mysqli_free_result($result6);
-                                        } 
-                                        else 
-                                        {    
-                                            echo"<option disabled value='NULL' name=\"NULL\">Κανένα διαθέσιμο αγροτεμάχιο</option>";  
-                                        }
+                                        
+                                        while($data = mysqli_fetch_array($result6))
+                                        {           
+                                        
+                                            $client = $data['ID_AFM2'];
+                                            $c_name=$data['NAME'];
+                                            $c_surname=$data['SURNAME'];
+                                            echo" <option value=".$client.">".$client." - ".$c_name." ".$c_surname."</option>";
+                                        }    
+                                       
                     
                                     ?> 
                                     </select> 
-                                </div>
+                                    </div>
+                                <div class="col-2">
+                                    <h6> Επέλεξε αγροτεμάχιο:</h6> 
+                                    <select name="field_new" id="field_new">
+                                    
+                                    <?php
+                                    $query6 = "SELECT * FROM `parcel`";
+                                    $result6 = mysqli_query($link,$query6);
 
+                                    while($data = mysqli_fetch_array($result6))
+                                    {           
+                                    
+                                        $field_id = $data['ID'];
+                                        $client_id2 = $data['ID_AFM2'];
+                                        $field_location = $data['LOCATION'];
+                                        $crop2= $data['CROP'];
+                                        $morgen=$data['MORGEN'];
+                                      
+                                        if($client_id2=='801324922'){
+                                           echo"<option name='$client_id2' value=".$field_id." >".$field_location." ".$crop2." ".$morgen." στρ"."</option>";
+                                             
+                                        }
+                                        else{
+                                            echo"<option style='display:none' name='$client_id2' value=".$field_id." >".$field_location." ".$crop2." ".$morgen." στρ"."</option>";
+                                        }
+                                            
+                                    
+                                    }
+                  
+                                    ?> 
+                                    </select> 
+                                </div>
+                                
+                                
                                 <div class="col-2">
                                     <h6> Επέλεξε κατάσταση:</h6> 
                                     <select name="stat_new" id="stat_new" >
@@ -293,12 +319,15 @@
                                     <input style=" height:55%" id="product_amount" name="product_amount" type="number">
                                 </div>
                                 
-                                <div class="col-3">
+                                <div class="col-2">
                                     <h6> Εισάγετε κόστος εργασίας:</h6> 
                                     <input style="height:55%" id="total_cost" name="total_cost" type="number">
                                 </div>
 
-
+                                <div class="col-2">
+                                    <h6> Εισάγετε σημείωση:</h6> 
+                                    <input style="height:55%;width:100%;" id="note" name="note" type="text">
+                                </div>
                         </div>
                         
                         <br>
@@ -332,14 +361,14 @@
 
                         if ($_POST['product_amount']== 0) {
 
-                            $query_cr1 ="INSERT INTO `jobs`(`ID`, `TYPE`, `J_TIMESTAMP`, `J_STATUS`, `ERGERNCY`, `ID_AFM`, `NOTE`, `ID_PARCEL`) VALUES (NULL,'".$_POST['type_new']."','".$_POST['date_new']."','".$_POST['stat_new']."','".$_POST['urgen_new']."','".$id."',NULL,".$_POST['field_new'].");";
-                            $query_cr2="INSERT INTO `job_uses_product` (`ID_PRODUCT`, `ID_JOBS`, `AMOUNT`, `COST`, `ID_PARCEL`,`TOTAL_COST`) VALUES ('0',( SELECT MAX(ID) FROM jobs WHERE jobs.ID_AFM ='".$id."') , '".$_POST['product_amount']."', '".$_POST['total_cost']."',".$_POST['field_new'].",'".$final_cost."');";  
+                            $query_cr1 ="INSERT INTO `jobs`(`ID`, `TYPE`, `J_TIMESTAMP`, `J_STATUS`, `ERGERNCY`, `ID_AFM`, `NOTE`, `ID_PARCEL`) VALUES (NULL,'".$_POST['type_new']."','".$_POST['date_new']."','".$_POST['stat_new']."','".$_POST['urgen_new']."','".$_POST['client_new']."','".$_POST['note']."',".$_POST['field_new'].");";
+                            $query_cr2="INSERT INTO `job_uses_product` (`ID_PRODUCT`, `ID_JOBS`, `AMOUNT`, `COST`, `ID_PARCEL`,`TOTAL_COST`) VALUES ('0',( SELECT MAX(ID) FROM jobs WHERE jobs.ID_AFM ='".$_POST['client_new']."') , '".$_POST['product_amount']."', '".$_POST['total_cost']."',".$_POST['field_new'].",'".$final_cost."');";  
 
                         }else
                         {
                             //echo $final_cost;
-                            $query_cr1 ="INSERT INTO `jobs`(`ID`, `TYPE`, `J_TIMESTAMP`, `J_STATUS`, `ERGERNCY`, `ID_AFM`, `NOTE`, `ID_PARCEL`) VALUES (NULL,'".$_POST['type_new']."','".$_POST['date_new']."','".$_POST['stat_new']."','".$_POST['urgen_new']."','".$id."',NULL,".$_POST['field_new'].");";
-                            $query_cr2="INSERT INTO `job_uses_product` (`ID_PRODUCT`, `ID_JOBS`, `AMOUNT`, `COST`, `ID_PARCEL`,`TOTAL_COST`) VALUES ('".$_POST['product_new']."',( SELECT MAX(ID) FROM jobs WHERE jobs.ID_AFM ='".$id."') , '".$_POST['product_amount']."', '".$_POST['total_cost']."',".$_POST['field_new'].",'".$final_cost."');";
+                            $query_cr1 ="INSERT INTO `jobs`(`ID`, `TYPE`, `J_TIMESTAMP`, `J_STATUS`, `ERGERNCY`, `ID_AFM`, `NOTE`, `ID_PARCEL`) VALUES (NULL,'".$_POST['type_new']."','".$_POST['date_new']."','".$_POST['stat_new']."','".$_POST['urgen_new']."','".$_POST['client_new']."','".$_POST['note']."',".$_POST['field_new'].");";
+                            $query_cr2="INSERT INTO `job_uses_product` (`ID_PRODUCT`, `ID_JOBS`, `AMOUNT`, `COST`, `ID_PARCEL`,`TOTAL_COST`) VALUES ('".$_POST['product_new']."',( SELECT MAX(ID) FROM jobs WHERE jobs.ID_AFM ='".$_POST['client_new']."') , '".$_POST['product_amount']."', '".$_POST['total_cost']."',".$_POST['field_new'].",'".$final_cost."');";
     
                         }
                         
@@ -365,7 +394,7 @@
 
                 <h2>Οι εργασίες μου</h2>   
 
-                 <form action="User_Jobs.php" method="POST">
+                 <form action="Admin_Jobs.php" method="POST">
   
                     <table id="myTable" class="table table-striped table-bordered" style="width:100%">
                         <thead>
@@ -374,6 +403,7 @@
                                 <th>Ημερομηνία</th>
                                 <th>Εργασία</th>
                                 <th>Αργοτεμάχιο</th>
+                                <th>Πελάτης</th>
                                 <th>Κατάσταση</th>
                                 <th>Σπουδαιότητα</th>
                                 <th>Προϊόν που χρησημοποιήθηκε</th>
@@ -405,57 +435,58 @@
 
                         if(!empty($_POST['stat']) && empty($_POST['urgen']) && empty($_POST['date_from']) && empty($_POST['date_to']))
                         {
-                            $query15 = "SELECT jobs.ID, jobs.TYPE ,jobs.J_TIMESTAMP , jobs.J_STATUS, jobs.ERGERNCY, jobs.NOTE, job_uses_product.COST,job_uses_product.TOTAL_COST, product.NAME, product.PRICE, parcel.LOCATION,parcel.CROP, parcel.MORGEN
+                            $query15 = "SELECT jobs.ID_AFM,jobs.ID, jobs.TYPE ,jobs.J_TIMESTAMP , jobs.J_STATUS, jobs.ERGERNCY, jobs.NOTE, job_uses_product.COST,job_uses_product.TOTAL_COST, product.NAME, product.PRICE, parcel.LOCATION,parcel.CROP, parcel.MORGEN
                             FROM  job_uses_product  
                             INNER JOIN jobs ON jobs.ID = job_uses_product.ID_JOBS  
                             INNER JOIN product ON product.ID = job_uses_product.ID_PRODUCT
                             INNER JOIN parcel ON parcel.ID = job_uses_product.ID_PARCEL 
-                            WHERE  job_uses_product.ID_JOBS IN (SELECT jobs.ID FROM jobs WHERE jobs.ID_AFM  = '". $id ."' AND jobs.J_STATUS= '".$stat."')";
+                            WHERE  job_uses_product.ID_JOBS IN (SELECT jobs.ID FROM jobs WHERE  jobs.J_STATUS= '".$stat."')";
 
 
                         } 
                         elseif (!empty($_POST['urgen']) && empty($_POST['stat']) && empty($_POST['date_from']) && empty($_POST['date_to']))
                         {
-                            $query15 = "SELECT  jobs.ID, jobs.TYPE ,jobs.J_TIMESTAMP , jobs.J_STATUS, jobs.ERGERNCY, jobs.NOTE, job_uses_product.COST,job_uses_product.TOTAL_COST, product.NAME, product.PRICE, parcel.LOCATION,parcel.CROP, parcel.MORGEN
+                            $query15 = "SELECT jobs.ID_AFM, jobs.ID, jobs.TYPE ,jobs.J_TIMESTAMP , jobs.J_STATUS, jobs.ERGERNCY, jobs.NOTE, job_uses_product.COST,job_uses_product.TOTAL_COST, product.NAME, product.PRICE, parcel.LOCATION,parcel.CROP, parcel.MORGEN
                             FROM  job_uses_product  
                             INNER JOIN jobs ON jobs.ID = job_uses_product.ID_JOBS  
                             INNER JOIN product ON product.ID = job_uses_product.ID_PRODUCT
                             INNER JOIN parcel ON parcel.ID = job_uses_product.ID_PARCEL
-                            WHERE  job_uses_product.ID_JOBS IN (SELECT jobs.ID FROM jobs WHERE jobs.ID_AFM  = '". $id ."' AND jobs.ERGERNCY= '".$urgen."')";
+                            WHERE  job_uses_product.ID_JOBS IN (SELECT jobs.ID FROM jobs WHERE  jobs.ERGERNCY= '".$urgen."')";
 
                         }
                         elseif (!empty($_POST['urgen']) && !empty($_POST['stat']) && empty($_POST['date_from']) && empty($_POST['date_to']))
                         {
-                            $query15 = "SELECT jobs.ID, jobs.TYPE ,jobs.J_TIMESTAMP , jobs.J_STATUS, jobs.ERGERNCY, jobs.NOTE, job_uses_product.COST,job_uses_product.TOTAL_COST, product.NAME, product.PRICE, parcel.LOCATION,parcel.CROP, parcel.MORGEN
+                            $query15 = "SELECT jobs.ID_AFM,jobs.ID, jobs.TYPE ,jobs.J_TIMESTAMP , jobs.J_STATUS, jobs.ERGERNCY, jobs.NOTE, job_uses_product.COST,job_uses_product.TOTAL_COST, product.NAME, product.PRICE, parcel.LOCATION,parcel.CROP, parcel.MORGEN
                             FROM  job_uses_product  
                             INNER JOIN jobs ON jobs.ID = job_uses_product.ID_JOBS  
                             INNER JOIN product ON product.ID = job_uses_product.ID_PRODUCT
                             INNER JOIN parcel ON parcel.ID = job_uses_product.ID_PARCEL
-                            WHERE  job_uses_product.ID_JOBS IN (SELECT jobs.ID FROM jobs WHERE jobs.ID_AFM  = '". $id ."' AND jobs.ERGERNCY= '".$urgen."' AND jobs.J_STATUS= '".$stat."')";
+                            WHERE  job_uses_product.ID_JOBS IN (SELECT jobs.ID FROM jobs WHERE  jobs.ERGERNCY= '".$urgen."' AND jobs.J_STATUS= '".$stat."')";
 
                         }
                         elseif ( empty($_POST['urgen']) && empty($_POST['stat']) && !empty($_POST['date_from']) && !empty($_POST['date_to']))
                         {
                             
                             //echo $date_from. $date_to;
-                            $query15 = "SELECT  jobs.ID, jobs.TYPE ,jobs.J_TIMESTAMP , jobs.J_STATUS, jobs.ERGERNCY, jobs.NOTE, job_uses_product.COST,job_uses_product.TOTAL_COST, product.NAME, product.PRICE, parcel.LOCATION,parcel.CROP, parcel.MORGEN
+                            $query15 = "SELECT jobs.ID_AFM, jobs.ID, jobs.TYPE ,jobs.J_TIMESTAMP , jobs.J_STATUS, jobs.ERGERNCY, jobs.NOTE, job_uses_product.COST,job_uses_product.TOTAL_COST, product.NAME, product.PRICE, parcel.LOCATION,parcel.CROP, parcel.MORGEN
                             FROM  job_uses_product  
                             INNER JOIN jobs ON jobs.ID = job_uses_product.ID_JOBS  
                             INNER JOIN product ON product.ID = job_uses_product.ID_PRODUCT
                             INNER JOIN parcel ON parcel.ID = job_uses_product.ID_PARCEL 
-                            WHERE  job_uses_product.ID_JOBS IN (SELECT jobs.ID FROM jobs WHERE jobs.ID_AFM  = '". $id ."' AND J_TIMESTAMP BETWEEN '". $date_from . "' AND '". $date_to ."')";
+                            WHERE  job_uses_product.ID_JOBS IN (SELECT jobs.ID FROM jobs WHERE  J_TIMESTAMP BETWEEN '". $date_from . "' AND '". $date_to ."')";
 
                         }
                         else 
                         {
-                        $query15 = "SELECT * FROM (SELECT  jobs.ID, jobs.TYPE ,jobs.J_TIMESTAMP , jobs.J_STATUS, jobs.ERGERNCY, jobs.NOTE, job_uses_product.COST,job_uses_product.TOTAL_COST, product.NAME, product.PRICE, parcel.LOCATION,parcel.CROP, parcel.MORGEN  
+                        $query15 = "SELECT * FROM (SELECT  jobs.ID_AFM, jobs.ID, jobs.TYPE ,jobs.J_TIMESTAMP , jobs.J_STATUS, jobs.ERGERNCY, jobs.NOTE, job_uses_product.COST,job_uses_product.TOTAL_COST, product.NAME, product.PRICE, parcel.LOCATION,parcel.CROP, parcel.MORGEN  
                         FROM  job_uses_product  
                         INNER JOIN jobs ON jobs.ID = job_uses_product.ID_JOBS  
                         INNER JOIN product ON product.ID = job_uses_product.ID_PRODUCT
                         INNER JOIN parcel ON parcel.ID = job_uses_product.ID_PARCEL
-                        WHERE  job_uses_product.ID_JOBS IN (SELECT jobs.ID FROM jobs WHERE jobs.ID_AFM  = '044513687') ORDER BY jobs.ID DESC LIMIT 5) var1 ORDER BY ID ASC";
+
+                        WHERE  job_uses_product.ID_JOBS IN (SELECT jobs.ID FROM jobs) ORDER BY jobs.ID DESC LIMIT 5) var1 ORDER BY ID ASC";
         
-                        }   echo "<form action=\"User_Jobs.php\" method=\"POST\">";
+                        }   echo "<form action=\"Admin_Jobs.php\" method=\"POST\">";
                             $result15 = mysqli_query($link,$query15);
                                 if(mysqli_num_rows($result15) > 0)
                                 {   
@@ -467,6 +498,7 @@
                                         echo "<td>" . $row['J_TIMESTAMP'] . "</td>";
                                         echo "<td>" .$row['TYPE']. "</td>";
                                         echo "<td>" .$row['CROP']." - ".$row['LOCATION']." ".$row['MORGEN']."στρ. "."</td>"; 
+                                        echo "<td>" .$row['ID_AFM']. "</td>"; 
 
                                         if($row['J_STATUS'] == "ΕΓΙΝΕ")
                                         {
@@ -543,18 +575,7 @@
 
 
                     ?>
-            <?php
-            // ΓΙΑ ΕΜΦΑΝΙΣΗ ΦΩΤΟΓΡΑΦΙΩΝ ΠΟΥ ΕΧΟΥΝ ΚΑΠΟΙΑ ΑΝΑΛΥΣΗ 
-                $query2 = "SELECT `FILE` FROM `files_photos` WHERE ID_FILE = 'PH02'";
-                $result2 = mysqli_query($link,$query2);
-
-                if(mysqli_num_rows($result2) > 0)
-                { 
-                    $row = mysqli_fetch_array($result2);
-                //echo '<img src="data:image/jpeg;base64,'.base64_encode($row['FILE']).'"/>';
-                }
-
-            ?>
+            
 
 
            </div>
@@ -580,6 +601,19 @@
             }
             list[0].selected = true;     
         }
-       
+        function changeclient(x){
+            console.log(document.getElementsByName(x.value));
+            var list =document.getElementsByName(x.value);
+            var z = document.getElementById('field_new');
+
+            for(var j=0;j<z.options.length;j++) {
+                z.options[j].style.display = 'none';
+            }  
+
+            for(var i=0;i<list.length;i++){
+                list[i].style.display= 'inline';
+            }
+            list[0].selected = true;     
+        }
     </script>
 </html>

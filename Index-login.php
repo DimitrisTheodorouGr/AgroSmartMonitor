@@ -56,6 +56,12 @@
 	
 	<link rel="stylesheet" href="css/style.css">
 
+	<style>
+		.img_logo{
+			margin-top: 65px;
+			text-align: center;
+		}
+	</style>
 	</head>
 	<body>
 	<section class="ftco-section">
@@ -64,7 +70,9 @@
 			<div class="row justify-content-center">
 				<div class="col-md-7 col-lg-5">
 					<div class="wrap">
-						<div class="img" style="background-image: url(Logos/LogoSample_2.jpg);"></div>
+						<div class="img_logo" >
+						<img src='Logos/LogoSample_2.png'  width='80%'>
+						</div>
 						<div class="login-wrap p-4 p-md-5">
 			      	<div class="d-flex">
 			      		<div class="w-100">
